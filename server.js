@@ -25,8 +25,9 @@ app.get("/app/", (req, res, next) => {
 // CREATE a new user (HTTP method POST) at endpoint /app/new/ ****************************************
 app.post("/app/new/", (req, res) => {
 	const stmt = db.prepare("INSERT INTO userinfo (user, pass) VALUES (?, ?)");
-	const info = stmt.run(req.body.user, req.body.pass);
-	res.status(201).json(info.changes);
+	const info = stmt.run(req.body.user, md5(req.body.pass));
+	res.status(201).json({"message": info.changes + " record created: ID" + info.lastInsertRowid});
+	console.log
 });
 // READ a list of all users (HTTP method GET) at endpoint /app/users/
 app.get("/app/users", (req, res) => {	
@@ -51,6 +52,6 @@ app.delete("/app/delete/user/:id", (req, res) => {
 });
 // Default response for any other request
 app.use(function(req, res){
-	res.json({"message":"Your API is working!"});
+	res.json({"message":"Endpoint not found. {404}"});
     res.status(404);
 });
